@@ -1,0 +1,103 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<Users>
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+    <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">👥 Gestion des Membres</h2>
+            <p class="text-muted small">Administrez les accès et les rôles de la plateforme</p>
+        </div>
+        <a asp-controller="Users" asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm">
+            <i class="bi bi-person-plus-fill me-2"></i>Ajouter un utilisateur
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 20px; overflow: hidden;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light text-muted uppercase small">
+                        <tr>
+                            <th class="ps-4 py-3">Utilisateur</th>
+                            <th class="py-3">Email</th>
+                            <th class="py-3">Rôle</th>
+                            <th class="py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center fw-bold me-3 shadow-sm" 
+                                             style="width: 45px; height: 45px; font-size: 1.2rem;">
+                                            @user.name.Substring(0, 1).ToUpper()
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark">@user.name</div>
+                                            <div class="text-muted mini-text">ID: #@user.Id</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-secondary"><i class="bi bi-envelope me-2"></i>@user.email</span>
+                                </td>
+                                <td>
+                                    @if (user.role.ToLower() == "administrateur")
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3">
+                                            <i class="bi bi-shield-check me-1"></i> @user.role
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3">
+                                            <i class="bi bi-person me-1"></i> @user.role
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group gap-2">
+                                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary rounded-circle" title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-outline-danger rounded-circle" 
+                                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')" title="Supprimer">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Petites optimisations locales */
+    .mini-text { font-size: 0.75rem; }
+    .table thead th {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-bottom-width: 1px;
+    }
+    .table tbody tr:last-child td { border-bottom: 0; }
+    .btn-outline-primary:hover, .btn-outline-danger:hover { color: white !important; }
+</style>
+
+    </body>
+    </html>
+

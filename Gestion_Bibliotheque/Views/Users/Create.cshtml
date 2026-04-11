@@ -1,0 +1,97 @@
+﻿@model Users
+
+@{
+    ViewData["Title"] = "Ajouter un membre";
+}
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+ 
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <a asp-action="Index" class="btn btn-link text-muted mb-3 p-0 text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Retour à la liste des membres
+            </a>
+
+            <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="bg-info-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-person-plus text-info fs-3"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark">Nouveau Membre</h3>
+                        <p class="text-muted small">Créez un compte pour un nouvel utilisateur ou administrateur</p>
+                    </div>
+
+                    <form asp-controller="Users" asp-action="Create" method="post">
+                        <div class="mb-4">
+                            <label asp-for="name" class="form-label fw-bold small text-uppercase tracking-wider text-muted">Nom complet</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-person-badge"></i></span>
+                                <input asp-for="name" class="form-control border-light bg-light rounded-end-pill" placeholder="Ex: Jean Dupont" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="email" class="form-label fw-bold small text-uppercase tracking-wider text-muted">Adresse Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-envelope-at"></i></span>
+                                <input asp-for="email" type="email" class="form-control border-light bg-light rounded-end-pill" placeholder="nom@exemple.com" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="password" class="form-label fw-bold small text-uppercase tracking-wider text-muted">Mot de passe</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-key"></i></span>
+                                <input asp-for="password" type="password" class="form-control border-light bg-light rounded-end-pill" placeholder="••••••••" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="role" class="form-label fw-bold small text-uppercase tracking-wider text-muted">Rôle & Permissions</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-shield-lock"></i></span>
+                                <select asp-for="role" class="form-select border-light bg-light rounded-end-pill">
+                                    <option value="lecteur">Lecteur (Accès limité)</option>
+                                    <option value="administrateur">Administrateur (Contrôle total)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-info btn-lg rounded-pill shadow-sm fw-bold text-white">
+                                <i class="bi bi-check-lg me-2"></i>Enregistrer le membre
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Focus styling personnalisé */
+    .form-control:focus, .form-select:focus {
+        background-color: #fff !important;
+        border-color: #0dcaf0 !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.15);
+    }
+    
+    .input-group-text {
+        border-radius: 50rem 0 0 50rem !important;
+        color: #6c757d;
+    }
+    
+    .tracking-wider {
+        letter-spacing: 0.08em;
+    }
+</style>
+    </body>
+    </html>

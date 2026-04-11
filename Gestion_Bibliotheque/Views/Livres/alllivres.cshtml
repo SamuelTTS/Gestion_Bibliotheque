@@ -1,0 +1,140 @@
+﻿@model List<Livres>
+
+@{
+    ViewData["Title"] = "Catalogue Bibliothèque";
+    var userRole = Context.Session.GetString("UserRole");
+    var userName = Context.Session.GetString("UserName");
+}
+
+<div class="container py-4 animate-fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-0">📚 Catalogue de la Bibliothèque</h2>
+            <p class="text-muted small"> @Model.Count() ouvrages disponibles dans la bibliotheque </p>
+        </div>
+        <div class="btn-group">
+            @if (userRole == "administrateur")
+            {
+                <a asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary rounded-pill me-2 transition-03">
+                    <i class="bi bi-people"></i> Gérer les membres
+                </a>
+                <a asp-action="Create" class="btn btn-primary rounded-pill px-4 shadow-sm btn-hover-pulse">
+                    <i class="bi bi-plus-lg"></i> Nouveau Livre
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-5 p-3 animate-fade-in" style="border-radius: 15px; animation-delay: 0.2s;">
+        <form asp-action="Index" method="get" class="row g-2 align-items-center">
+            <div class="col-md-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-primary"><i class="bi bi-search"></i></span>
+                    <input type="text" name="searchString" class="form-control border-start-0 bg-light" placeholder="Rechercher un titre, un auteur ou une catégorie...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark w-100 rounded-pill fw-bold">Filtrer</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="row g-4 animate-fade-in" style="animation-delay: 0.4s;">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm card-book-interactive" style="border-radius: 20px;">
+                    <div class="card-body d-flex flex-column p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge rounded-pill @(item.EstEmprunte ? "bg-danger-subtle text-danger" : "bg-success-subtle text-success") px-3 py-2">
+                                <i class="bi bi-circle-fill me-1" style="font-size: 0.5rem;"></i>
+                                @(item.EstEmprunte ? "Occupé" : "Libre")
+                            </span>
+                            <span class="badge bg-light text-dark border rounded-pill px-2">@item.categories</span>
+                        </div>
+
+                        <h5 class="card-title fw-bold mb-1">@item.Titre</h5>
+                        <p class="text-muted small">par <span class="text-dark fw-medium">@item.Auteur</span></p>
+
+                        <div class="mt-auto">
+                            @if (item.EstEmprunte)
+                            {
+                                <p class="mb-3 text-danger small bg-light p-2 rounded-3">
+                                    <i class="bi bi-person-fill"></i> Détenteur : @item.Emprunteur
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="mb-3 text-success small">
+                                    <i class="bi bi-check2-circle"></i> Disponible immédiatement
+                                </p>
+                            }
+
+                            @if (!string.IsNullOrEmpty(userName))
+                            {
+                                if (!item.EstEmprunte)
+                                {
+                                    <a asp-action="Emprunter" asp-route-id="@item.Id" class="btn btn-primary w-100 rounded-pill mb-2 shadow-sm">Emprunter</a>
+                                }
+                                else if (item.Emprunteur == userName)
+                                {
+                                    <a asp-action="Emprunter" asp-route-id="@item.Id" class="btn btn-warning w-100 rounded-pill text-white mb-2 shadow-sm">Rendre le livre</a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-light w-100 rounded-pill mb-2 border" disabled>Indisponible</button>
+                                }
+                            }
+
+                            @if (userRole == "administrateur")
+                            {
+                                <div class="d-flex gap-2 border-top pt-3 mt-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm flex-fill rounded-pill">Modifier</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm flex-fill rounded-pill" 
+                                       onclick="return confirm('Voulez-vous vraiment supprimer cet asset ?');">Supprimer</a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Animations d'entrée */
+    .animate-fade-in {
+        opacity: 0;
+        animation: fadeInUp 0.7s ease-out forwards;
+    }
+
+    @@keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Interactions Cartes */
+    .card-book-interactive {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-book-interactive:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+
+    .transition-03 {
+        transition: all 0.3s ease;
+    }
+
+    .btn-hover-pulse:hover {
+        animation: pulse-small 1.5s infinite;
+    }
+
+    @@keyframes pulse-small {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+        100% { transform: scale(1); }
+    }
+</style>

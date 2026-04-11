@@ -1,0 +1,125 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+    var userRole = Context.Session.GetString("UserRole");
+    var userName = Context.Session.GetString("UserName");
+    
+    // On cache la sidebar UNIQUEMENT sur l'accueil public
+    bool showSidebar = !(currentController == "Home" && currentAction == "Index");
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BiblioCloud</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root { --sidebar-bg: #0f172a; --accent: #38bdf8; }
+        body { background-color: #f1f5f9; font-family: 'Poppins', sans-serif; margin: 0; }
+        .wrapper { display: flex; min-height: 100vh; }
+        
+        .sidebar { 
+            width: 280px; background: var(--sidebar-bg); color: white; 
+            display: flex; flex-column: column; position: sticky; top: 0; height: 100vh;
+        }
+
+        .nav-link { 
+            color: #94a3b8; padding: 12px 20px; border-radius: 10px; 
+            margin: 4px 15px; transition: 0.3s; display: flex; align-items: center;
+        }
+        .nav-link:hover, .nav-link.active { background: rgba(56, 189, 248, 0.1); color: var(--accent); }
+        .nav-link.active { background: var(--accent); color: #0f172a; font-weight: 600; }
+
+        .user-card { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px; padding: 15px; margin: 15px;
+        }
+        .main-content { flex-grow: 1; padding: 2rem; width: 100%; }
+        .full-screen { width: 100%; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    @if (showSidebar)
+    {
+        <nav class="sidebar d-flex flex-column shadow">
+            <div class="p-4 mb-2">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary p-2 rounded-3 me-3 shadow"><i class="bi bi-cloud-check fs-4 text-white"></i></div>
+                    <span class="fs-4 fw-bold">BiblioCloud</span>
+                </div>
+            </div>
+
+            <ul class="nav flex-column mb-auto">
+                @* 1. Dashboard : Uniquement pour l'Admin *@
+                @if (userRole == "administrateur")
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(currentAction == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard">
+                            <i class="bi bi-grid-1x2-fill me-3"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Livres" && currentAction != "Index" ? "active" : "")" asp-controller="Livres" asp-action="Create">
+                            <i class="bi bi-plus-circle-fill me-3"></i> Gestion Livres
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(currentController == "Users" ? "active" : "")" asp-controller="Users" asp-action="Index">
+                            <i class="bi bi-people-fill me-3"></i> Gestion Membres
+                        </a>
+                    </li>
+                }
+
+                @* 2. Catalogue : Pour tout le monde *@
+                <li class="nav-item">
+                    <a class="nav-link @(currentController == "Livres" && currentAction == "Index" ? "active" : "")" asp-controller="Livres" asp-action="Index">
+                        <i class="bi bi-journal-bookmark-fill me-3"></i> Catalogue
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-auto border-top border-secondary border-opacity-25">
+                @if (!string.IsNullOrEmpty(userName))
+                {
+                    @* Petit cadre récapitulatif en bas à gauche *@
+                    <div class="user-card animate-fade-in">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="bg-secondary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                <i class="bi bi-person-fill text-white"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <h6 class="mb-0 text-white text-truncate small">@userName</h6>
+                                <span class="badge bg-info text-dark shadow-sm" style="font-size: 0.6rem;">@userRole</span>
+                            </div>
+                        </div>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger btn-sm w-100 rounded-pill mt-2">
+                            <i class="bi bi-power me-2"></i>Déconnexion
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    @* Bouton de connexion si personne n'est connecté *@
+                    <div class="p-3">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary w-100 rounded-pill fw-bold shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
+                        </a>
+                    </div>
+                }
+            </div>
+        </nav>
+    }
+
+    <main class="main-content @(showSidebar ? "" : "full-screen")">
+        @RenderBody()
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

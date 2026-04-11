@@ -1,0 +1,96 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model Livres
+
+@{
+    ViewData["Title"] = "Modifier le livre";
+}
+
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <a asp-action="Index" class="btn btn-link text-muted mb-3 p-0 text-decoration-none">
+                <i class="bi bi-arrow-left"></i> Annuler et retourner au catalogue
+            </a>
+
+            <div class="card border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="bg-warning-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-pencil-square text-warning fs-3"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark">Modifier le livre</h3>
+                        <p class="text-muted small">ID de l'exemplaire : <span class="badge bg-light text-dark">#@Model.Id</span></p>
+                    </div>
+
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-4">
+                            <label asp-for="Titre" class="form-label fw-bold small text-uppercase tracking-wider">Titre du livre</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-bookmark-star"></i></span>
+                                <input asp-for="Titre" class="form-control border-light bg-light rounded-end-pill" placeholder="Titre" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Auteur" class="form-label fw-bold small text-uppercase tracking-wider">Auteur</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-person"></i></span>
+                                <input asp-for="Auteur" class="form-control border-light bg-light rounded-end-pill" placeholder="Auteur" required />
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="categories" class="form-label fw-bold small text-uppercase tracking-wider">Catégorie</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-tags"></i></span>
+                                <input asp-for="categories" class="form-control border-light bg-light rounded-end-pill" placeholder="Catégorie" />
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mt-4">
+                            <div class="col-8">
+                                <button type="submit" class="btn btn-warning btn-lg rounded-pill shadow-sm fw-bold w-100 text-dark">
+                                    <i class="bi bi-arrow-repeat me-2"></i>Mettre à jour
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <a asp-action="Index" class="btn btn-light btn-lg rounded-pill w-100 fw-bold">Annuler</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus {
+        background-color: #fff !important;
+        border-color: #ffc107 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.15);
+    }
+    
+    .input-group-text {
+        border-radius: 50rem 0 0 50rem !important;
+        color: #ffc107;
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+</style>
+    </body>
+    </html>
